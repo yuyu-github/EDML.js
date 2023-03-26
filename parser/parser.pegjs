@@ -119,7 +119,7 @@ Boolean = ("true" / "false") { return text() === "true" }
 String = value:("'" @(EscapeSequence / [^'\n])* "'" / "@'" @("''" { return "'" } / [^'])* "'") { return value.join("") }
 
 Number = Float / Integer
-Float = value:$([0-9]* "."? [0-9]* ("E"i [+-] [0-9]+)?) &{ return /[0-9]/.test(value) && /[.eE]/.test(value) } { return parseFloat(value) }
+Float = value:$([0-9]* "."? [0-9]* ("E"i [+-]? [0-9]+)?) &{ return /[0-9]/.test(value) && /[.eE]/.test(value) } { return parseFloat(value) }
 Integer = "0b"i value:[01]+ { return parseInt(value.join(""), 2) } /
 "0o"i value:[0-7]+ { return parseInt(value.join(""), 8) } /
 "0x"i [0-9a-fA-F]+ { return parseInt(text()) } /

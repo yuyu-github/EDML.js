@@ -2,6 +2,8 @@
 //
 // https://peggyjs.org/
 
+"use strict";
+
 
   const reservedWords = ["if", "else", "switch", "try", "catch", "for", "in", "while", "do", "delete", "break", "continue", "return", "throw", "global", "builtin", "true", "false", "null"]
   const escapeSequences = {"n":"\n", "r":"\r", "t":"\t"}
@@ -3606,36 +3608,34 @@ function peg$parse(input, options) {
         s8 = peg$FAILED;
         if (peg$silentFails === 0) { peg$fail(peg$e28); }
       }
-      if (s8 !== peg$FAILED) {
-        s9 = [];
-        if (peg$r1.test(input.charAt(peg$currPos))) {
-          s10 = input.charAt(peg$currPos);
-          peg$currPos++;
-        } else {
-          s10 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$e5); }
-        }
-        if (s10 !== peg$FAILED) {
-          while (s10 !== peg$FAILED) {
-            s9.push(s10);
-            if (peg$r1.test(input.charAt(peg$currPos))) {
-              s10 = input.charAt(peg$currPos);
-              peg$currPos++;
-            } else {
-              s10 = peg$FAILED;
-              if (peg$silentFails === 0) { peg$fail(peg$e5); }
-            }
+      if (s8 === peg$FAILED) {
+        s8 = null;
+      }
+      s9 = [];
+      if (peg$r1.test(input.charAt(peg$currPos))) {
+        s10 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s10 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$e5); }
+      }
+      if (s10 !== peg$FAILED) {
+        while (s10 !== peg$FAILED) {
+          s9.push(s10);
+          if (peg$r1.test(input.charAt(peg$currPos))) {
+            s10 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s10 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$e5); }
           }
-        } else {
-          s9 = peg$FAILED;
         }
-        if (s9 !== peg$FAILED) {
-          s7 = [s7, s8, s9];
-          s6 = s7;
-        } else {
-          peg$currPos = s6;
-          s6 = peg$FAILED;
-        }
+      } else {
+        s9 = peg$FAILED;
+      }
+      if (s9 !== peg$FAILED) {
+        s7 = [s7, s8, s9];
+        s6 = s7;
       } else {
         peg$currPos = s6;
         s6 = peg$FAILED;
@@ -5354,8 +5354,7 @@ function peg$parse(input, options) {
   }
 }
 
-export {
-  peg$SyntaxError as SyntaxError,
-
-  peg$parse as parse
+module.exports = {
+  SyntaxError: peg$SyntaxError,
+  parse: peg$parse
 };
