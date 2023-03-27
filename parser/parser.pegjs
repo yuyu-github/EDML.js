@@ -105,7 +105,7 @@ Value = "(" _ @Expression _ ")" !(_ "=>") / @Identifier !(_ "=>") / Keyword / Li
 Keyword = "global" { return {type: "Global"} } / "builtin" { return {type: "Builtin"} }
 
 Identifier = name:$(IdentifierStartChar IdentifierChar*) !{
-  return reservedWords.includes(name);
+  if (reservedWords.includes(name)) throw new SyntaxError(`'${name}' is a reserved word.`); else return true;
 } { return {type: "Identifier", name: name} }
 IdentifierChar = IdentifierStartChar / [0-9]
 IdentifierStartChar = [a-zA-Z_]

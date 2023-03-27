@@ -411,7 +411,7 @@ function peg$parse(input, options) {
   var peg$f41 = function() { return {type: "Global"} };
   var peg$f42 = function() { return {type: "Builtin"} };
   var peg$f43 = function(name) {
-  return reservedWords.includes(name);
+  if (reservedWords.includes(name)) throw new SyntaxError(`'${name}' is a reserved word.`); else return true;
 };
   var peg$f44 = function(name) { return {type: "Identifier", name: name} };
   var peg$f45 = function(value) { return {type: "Literal", raw: text(), value: value} };
