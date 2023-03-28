@@ -100,12 +100,12 @@ DoWhileExpression = "do" _ body:SpreadItem _ "while" _ "(" _ test:Expression _ "
 SpreadItem = Statement / KeyValuePair / Expression / SpreadExpression
 
 
-Value = "(" _ @Expression _ ")" !(_ "=>") / @Identifier !(_ "=>") / Keyword / Literal
+Value = "(" _ @Expression _ ")" !(_ "=>") / Keyword / @Identifier !(_ "=>") / Literal
 
 Keyword = "global" { return {type: "Global"} } / "builtin" { return {type: "Builtin"} }
 
-Identifier = name:$(IdentifierStartChar IdentifierChar*) &{
-  if (reservedWords.includes(name)) throw new SyntaxError(`'${name}' is a reserved word.`); else return true;
+Identifier = name:$(IdentifierStartChar IdentifierChar*) !{
+  return reservedWords.includes(name)
 } { return {type: "Identifier", name: name} }
 IdentifierChar = IdentifierStartChar / [0-9]
 IdentifierStartChar = [a-zA-Z_]
