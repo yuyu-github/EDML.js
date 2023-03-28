@@ -46,7 +46,7 @@ const builtin = {
   },
   string: value => ({ value: toString(value) }),
   date: (...args) => {
-    if (args.length == 1) return { value: toEDMLDate(new Date(args[0])) };
+    if (args.length == 1 && typeof args[0] == 'number') return { value: toEDMLDate(new Date(args[0])) };
     if (args.length > 7) return {};
     let date = new Date(0, 0);
     if (args.length > 1) date.setFullYear(args[0], args[1] - 1);
@@ -60,7 +60,7 @@ const builtin = {
   regex: (pattern, flags = '') => ({ value: { pattern: pattern, flags: flags } }),
   error: (name, message) => ({ value: { name: name, message: message } }),
   range: (num1, num2, step) => {
-    let start, end, arr = [];
+    let start, end, arr: number[] = [];
     if (num2 === undefined) { start = 0, end = num1 } 
     else { start = num1, end = num2 }
     if (step === undefined) step = Math.sign(Math.sign(end - start) + 0.5)
@@ -194,7 +194,7 @@ const builtin = {
   asinh: n => ({ value: Math.asinh(n) }),
   atan: n => ({ value: Math.atan(n) }),
   atanh: n => ({ value: Math.atanh(n) }),
-  atan2: n => ({ value: Math.atan2(n) }),
+  atan2: (y, x) => ({ value: Math.atan2(y, x) }),
   cbrt: n => ({ value: Math.cbrt(n) }),
   ceil: n => ({ value: Math.ceil(n) }),
   cos: n => ({ value: Math.cos(n) }),

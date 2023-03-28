@@ -1,5 +1,5 @@
 export class ASTCreator {
-  static value(value) {
+  static value(value: any): any {
     switch (typeof value) {
       default:
         return {
@@ -9,7 +9,7 @@ export class ASTCreator {
     }
   }
 
-  static binaryExpression(operator, left, right) {
+  static binaryExpression(operator: string, left: any, right: any): any {
     return {
       type: 'BinaryExpression',
       operator: operator,

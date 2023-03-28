@@ -3,7 +3,7 @@ import { ASTCreator as AC } from "./ast_creator.js";
 import builtin from "./builtin.js";
 import { addPrimitiveProperties } from "./primitive_property.js";
 
-export function run(ast, vars = {}) {
+export function run(ast: any, vars: { global?: {}, local?: {}[] } = {}) {
   vars = { global: {}, local: [{}], ...vars };
   let result = _run(ast, vars);
   if (typeof result.value == 'number' && !Number.isFinite(result.value)) result.value = undefined;
@@ -80,7 +80,7 @@ function _run(ast, vars) {
           if (ast.operator != '=') {
             result = run(AC.binaryExpression(ast.operator.slice(0, -1), 
               AC.value(ref.parent[ref.name]),
-              AC.value(value)), vars)
+              AC.value(right.value)), vars)
           }
           return use(result, result => {
             ref.parent[ref.name] = result.value;
@@ -98,7 +98,6 @@ function _run(ast, vars) {
         }
       })
     }
-    c
     case 'LogicalExpression': {
       return use(run(ast.left, vars), left => {
         switch (ast.operator) {
@@ -269,7 +268,7 @@ function _run(ast, vars) {
       return use(run(ast.callee, vars), callee => {
         if (callee.value == null) return { value: undefined };
 
-        let args = [];
+        let args: any[] = [];
         for (let arg of ast.arguments) {
           let { value, command } = run(arg, vars);
           if (command !== undefined) return { command: command };
@@ -337,7 +336,7 @@ function _run(ast, vars) {
     case 'ForInExpression': {
       return use(run(ast.iterable, vars), iterable => {
         if (iterable.value instanceof String || Array.isArray(iterable.value)) {
-          let result = undefined;
+          let result: any = undefined;
           let i = 0;
           for (let item of iterable.value) {
             let param = {[ast.item.name]: item};
@@ -372,12 +371,13 @@ function _run(ast, vars) {
           }
           return { value: result };
         }
+        else return {};
       })
     }
     case 'WhileExpression':
     case 'DoWhileExpression': {
       let testStart = ast.type == 'WhileExpression';
-      let result = undefined;
+      let result: any = undefined;
       while (true) {
         if (testStart) {
           let { value: test, command } = run(ast.test, vars);
@@ -470,7 +470,7 @@ function _run(ast, vars) {
     }
     case 'Array': {
       return scope(vars, () => {
-        let array = [];
+        let array: any[] = [];
         for (let elem of ast.elements) {
           let { value, command } = run(elem, vars);
           if (elem.kind == 'Expression') {
@@ -526,7 +526,8 @@ function _run(ast, vars) {
     case 'LambdaExpression': {
       return { value: (...args) => {
         let argVars = {};
-        ast.params.forEach((param, i) => {
+        let i = 0;
+        for (let param of ast.params) {
           let key;
           if (param.type == 'Identifier') {
             key = param.name;
@@ -541,7 +542,8 @@ function _run(ast, vars) {
           }
           argVars[key] = Object(argVars[key]);
           addPrimitiveProperties(argVars[key]);
-        })
+          i++;
+        }
 
         return scope(vars, () => {
           let { value: result, command } = run(ast.body, vars)
@@ -557,19 +559,19 @@ function _run(ast, vars) {
   }
 }
 
-function use(value, func) {
+function use(value: any, func: (result: any) => any) {
   if (value.command !== undefined) return { command: value.command };
   else return func(value);
 }
 
-function scope(vars, func, data = {}) {
+function scope(vars: { global: {}, local: [{}] }, func: () => any, data = {}) {
   vars.local.push(data);
   let result = func();
   vars.local.pop();
   return result;
 }
 
-function _throw(name, message) {
+function _throw(name: string, message: string = '') {
   return {
     command: {
       name: 'throw',

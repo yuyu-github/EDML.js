@@ -1,5 +1,5 @@
 export default class EDMLError extends Error {
-  constructor(exception) {
+  constructor(exception: any) {
     let message = (exception.name ?? 'Error') + (exception.message != null ? ': ' + exception.message : '');
     super(message);
 

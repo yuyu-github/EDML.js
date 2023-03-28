@@ -3,7 +3,7 @@ import { addPrimitiveProperties } from "./primitive_property.js";
 export const defaultSymbol = Symbol();
 export const importSymbol = Symbol();
 
-export function hasEqualProperty(obj, props) {
+export function hasEqualProperty(obj: any, props: string[]) {
   for (let prop in obj) {
     if (props.includes(prop)) props.splice(props.indexOf(prop), 1);
     else return false;
@@ -11,7 +11,9 @@ export function hasEqualProperty(obj, props) {
   return props.length == 0;
 }
 
-export function toPrimitive(value, deep = true, options = {}) {
+export function toPrimitive(value: Object, deep = true, options: {
+  compileDate?: boolean;
+} = {}) {
   let defaultOptions = {
     compileDate: false,
   }
@@ -20,8 +22,8 @@ export function toPrimitive(value, deep = true, options = {}) {
   let newValue = value?.valueOf();
   if (Array.isArray(newValue)) {
     newValue = [];
-    for (let item of value) {
-      newValue.push(deep ? toPrimitive(item, deep, options) : item);
+    for (let item of value as any[]) {
+      (newValue as any[]).push(deep ? toPrimitive(item, deep, options) : item);
     }
   } else if (typeof newValue == 'object') {
     newValue = {};
@@ -39,21 +41,21 @@ export function toPrimitive(value, deep = true, options = {}) {
   return newValue;
 }
 
-export function toEDMLObject(value) {
+export function toEDMLObject(value: any) {
   if (typeof value != 'object' && value != null) value = Object(value);
   addPrimitiveProperties(value);
   return value;
 }
 
-export function truthy(value) {
+export function truthy(value: any) {
   return !falsy(value);
 }
 
-export function falsy(value) {
+export function falsy(value: any) {
   return value?.valueOf() === false || value == null;
 }
 
-export function toString(value) {
+export function toString(value: any) {
   if (value instanceof Boolean || typeof value === 'boolean') return value ? Object('true') : Object('false');
   if (value instanceof Number || typeof value === 'number') return new String(value);
   if (value instanceof String || typeof value === 'string') return Object(value);
@@ -61,7 +63,7 @@ export function toString(value) {
   else return new String();
 }
 
-export function toRegex(value) {
+export function toRegex(value: any) {
   let flags = 'gu';
   try {
     if (typeof(value) == 'object' && 'pattern' in value && 'flags' in value) return new RegExp(value.pattern, value.flags.replace(/[^ims]/g) + flags);
@@ -72,11 +74,11 @@ export function toRegex(value) {
   }
 }
 
-export function toDate(value) {
+export function toDate(value: any) {
   return new Date(value.time)
 }
 
-export function toEDMLDate(value, utc = false) {
+export function toEDMLDate(value: Date, utc = false) {
   return {
     time: value.getTime(),
     year: utc ? value.getUTCFullYear() : value.getFullYear(),

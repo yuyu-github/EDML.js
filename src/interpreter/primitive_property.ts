@@ -35,7 +35,7 @@ export const primitiveProperties = {
     removeAt: _this => index => { _this.splice(index, 1); return { value: _this, set: true } },
     pop: _this => () => { _this.pop(); return { value: _this, set: true } },
     reverse: _this => value => { _this.reverse(value); return { value: _this, set: true } },
-    sort: _this => (func = null) => {
+    sort: _this => (func: any = null) => {
       func ??= (a, b) => { a = toString(a); b = toString(b); return a == b ? 0 : a < b ? -1 : 1 }
       return { value: _this.sort((a, b) => func(a, b)?.valueOf()), set: true }
     },
@@ -46,7 +46,7 @@ export const primitiveProperties = {
     find: _this => func => { return { value: _this.find((e, i, a) => toPrimitive(func(e, i, a).value)) } },
     findLast: _this => func => { return { value: _this.findLast((e, i, a) => toPrimitive(func(e, i, a).value)) } },
     group: _this => func => ({
-      value: _this.reduce((obj, e, i, a) => { (obj[toPrimitive(func(e, i, a).value)] ??= []).push(e); return obj }, {})
+      value: _this.reduce((obj, e, i, a) => { (obj[toPrimitive(func(e, i, a).value) as string] ??= []).push(e); return obj }, {})
     }),
     map: _this => func => { return { value: _this.map((e, i, a) => func(e, i, a).value) } },
     reduce: _this => (func, init = undefined) => ({
