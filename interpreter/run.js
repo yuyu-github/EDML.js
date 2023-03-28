@@ -234,14 +234,15 @@ function _run(ast, vars) {
         else property = ast.property.name;
 
         if (!Object.getOwnPropertyNames(object.value).includes(property)) {
-          object.value[property] = undefined;
+          if ((Object.getOwnPropertyDescriptor(object.value, property)?.configurable ?? true) && !Object.isFrozen(object.value))
+            object.value[property] = undefined;
         }
 
         let parent = object.value;
         if (!(Object.getOwnPropertyDescriptor(object.value, property)?.enumerable ?? true))
           parent = object.value[defaultSymbol];
         let ref = {}, parentRef = {};
-        if ((Object.getOwnPropertyDescriptor(object.value, property)?.configurable ?? true) && !Object.isFrozen(parent)) {
+        if ((Object.getOwnPropertyDescriptor(parent, property)?.configurable ?? true) && !Object.isFrozen(parent)) {
           ref = {
             ref: {
               parent: parent,
