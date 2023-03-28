@@ -59,7 +59,15 @@ function _run(ast, vars) {
     case 'AssignmentExpression': {
       return use(run(ast.left, vars), left => {
         let ref = left.ref;
-        if (ref === undefined) return _throw('ReferenceError', 'Invalid left side in assignment')
+        if (ref === undefined) {
+          if (left.name === undefined) return _throw('ReferenceError', 'Invalid left side in assignment')
+          else {
+            ref = {
+              parent: vars.local[vars.local.length - 1],
+              name: left.name
+            }
+          }
+        }
         return use(run(ast.right, vars), right => {
           let result = right;
           if (ast.operator != '=') {
@@ -420,11 +428,13 @@ function _run(ast, vars) {
       }
       if (ast.name in vars.global)
         return {
-          value: vars.global[ast.name]
+          value: vars.global[ast.name],
+          name: ast.name
         }
       else if (ast.name in builtin)
         return {
-          value: builtin[ast.name]
+          value: builtin[ast.name],
+          name: ast.name
         }
       else return {
         ref: {
