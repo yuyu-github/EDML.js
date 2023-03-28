@@ -3,7 +3,7 @@
 // https://peggyjs.org/
 
 
-  const reservedWords = ["if", "else", "switch", "case", "default", "try", "catch", "for", "in", "while", "do", "delete", "break", "continue", "return", "throw", "require", "global", "builtin", "true", "false", "null"]
+  const reservedWords = ["if", "else", "switch", "case", "default", "try", "catch", "for", "in", "while", "do", "delete", "break", "continue", "return", "throw", "require", "global", "builtin", "const", "true", "false", "null"]
   const escapeSequences = {"n":"\n", "r":"\r", "t":"\t"}
 
 function peg$subclass(child, parent) {
