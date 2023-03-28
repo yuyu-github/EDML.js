@@ -3246,9 +3246,9 @@ function peg$parse(input, options) {
       peg$savedPos = peg$currPos;
       s2 = peg$f43(s1);
       if (s2) {
-        s2 = peg$FAILED;
-      } else {
         s2 = undefined;
+      } else {
+        s2 = peg$FAILED;
       }
       if (s2 !== peg$FAILED) {
         peg$savedPos = s0;
