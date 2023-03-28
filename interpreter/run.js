@@ -56,6 +56,13 @@ function _run(ast, vars) {
       }))
     }
     
+    case 'RequireExpression': {
+      for (let v of ast.vars) {
+        if (v.name in vars.global) continue;
+        else return {};
+      }
+      return use(run(ast.expression, vars), result => ({ value: result.value }))
+    }
     case 'AssignmentExpression': {
       return use(run(ast.left, vars), left => {
         let ref = left.ref;

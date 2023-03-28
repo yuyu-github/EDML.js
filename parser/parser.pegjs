@@ -20,8 +20,11 @@ ContinueStatement = "continue" level:(__ @([1-9][0-9]* { return parseInt(text())
 ReturnStatement = "return" value:(__ @Expression)? { return {type: "ReturnStatement", value: value} }
 
 
-Expression = expression:AssignmentExpression
+Expression = expression:(RequireExpression / AssignmentExpression)
 { return {kind: "Expression", ...expression} }
+
+RequireExpression = "require" _ "(" vars:(_ @Identifier _)|0.., ","| ","? _ ")" _ expression:Expression
+{ return {type: 'RequireExpression', vars: vars, expression: expression} }
 
 AssignmentExpression = left:Factor _ operator:$(("**" / "<<" / ">>>" / ">>" / "&&" / "||" / "??" / [+\-*/%&^|])? "=") _ right:AssignmentExpression
 { return {type: "AssignmentExpression", operator: operator, left: left, right: right} } / ConditionalExpression
