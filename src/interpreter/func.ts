@@ -34,6 +34,8 @@ export function toPrimitive(value: Object, deep = true, options: {
       newValue[key] = deep ? toPrimitive(value[key], deep, options) : value[key];
     }
 
+    if (value[importSymbol] !== undefined) newValue[importSymbol] = value[importSymbol];
+
     if (options.compileDate == true && hasEqualProperty(newValue, ['time', 'year', 'month', 'day', 'weekDay', 'hour', 'minute', 'second', 'millisecond', 'utc'])) {
       newValue = toDate(newValue);
     }
